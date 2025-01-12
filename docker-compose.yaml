@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    ports:
+      - "8081:80"
+    networks:
+      - yalp
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    restart: unless-stopped
+
+  backend:
+    container_name: backend
+    build: ./bot
+    depends_on:
+      db:
+        condition: service_healthy 
+    ports:
+      - "8080:8080" 
+    networks:
+      - yalp
+    volumes:
+      - ./bot:/app
+    restart: unless-stopped
+
+  python-service:
+    container_name: python_service
+    build: ./web
+    depends_on:
+      db:
+        condition: service_healthy 
+    ports:
+      - "5000:5000" 
+    networks:
+      - yalp
+    volumes:
+      - ./web:/app
+    restart: unless-stopped
+
+  db:
+    container_name: postgres_db
+    image: postgres:15
+    environment:
+      POSTGRES_USER: azizbek
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: bot
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" 
+    networks:
+      - yalp
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U azizbek -d bot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    image: migrate/migrate
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - yalp
+    volumes:
+      - ./bot/migrations:/migrations
+    command: ["-path", "/migrations", "-database", "postgres://azizbek:123@postgres_db:5432/bot?sslmode=disable", "up"]
+    restart: "no"
+
+networks:
+  yalp:
+    driver: bridge
+
+volumes:
+  postgres_data:
