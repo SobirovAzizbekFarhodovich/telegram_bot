@@ -1,72 +1,16 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a simple API for managing user passwords",
-        "title": "Password Manager API",
+        "description": "This is an API for managing user passwords",
+        "title": "Password Management API",
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
     "basePath": "/",
     "paths": {
         "/password": {
             "get": {
-                "description": "Retrieve passwords by phone number and site name",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Password"
-                ],
-                "summary": "Get Passwords by Site",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Phone number",
-                        "name": "phone",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Site name",
-                        "name": "site",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of passwords matching criteria",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Password"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Phone and site are required",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to fetch passwords",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a new password",
+                "description": "Get passwords by site name for the user",
                 "consumes": [
                     "application/json"
                 ],
@@ -76,65 +20,13 @@
                 "tags": [
                     "Password"
                 ],
-                "summary": "Create Password",
-                "parameters": [
-                    {
-                        "description": "Password data",
-                        "name": "password",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Password"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Password created successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid input",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to create password",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/password/{phone}": {
-            "get": {
-                "description": "Retrieve all passwords associated with a phone number",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Password"
-                ],
-                "summary": "Get All Passwords by Phone",
+                "summary": "Get Passwords By Site",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Phone number",
-                        "name": "phone",
-                        "in": "path",
+                        "description": "Site name",
+                        "name": "site",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -149,21 +41,91 @@
                         }
                     },
                     "400": {
-                        "description": "Phone number is required",
+                        "description": "Site name is required",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch passwords",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new password for the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Password"
+                ],
+                "summary": "Create Password",
+                "parameters": [
+                    {
+                        "description": "Password",
+                        "name": "Password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Password"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Password created successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create password",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/password/:userID": {
+            "get": {
+                "description": "Get all passwords for a user by user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Password"
+                ],
+                "summary": "Get All Passwords",
+                "responses": {
+                    "200": {
+                        "description": "List of passwords",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Password"
                             }
                         }
                     },
                     "500": {
                         "description": "Failed to fetch passwords",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "type": "string"
                         }
                     }
                 }
@@ -175,18 +137,22 @@
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "integer"
-                },
-                "password": {
                     "type": "string"
                 },
-                "phone": {
+                "password": {
                     "type": "string"
                 },
                 "site": {
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

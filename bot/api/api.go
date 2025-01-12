@@ -7,12 +7,19 @@ import (
 	"github.com/gin-gonic/gin"
 	files "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "bot/docs" // Import generated Swagger docs
 )
 
+// @title Password Management API
+// @version 1.0
+// @description This is an API for managing user passwords
+// @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func NewGin(h *handler.HTTPHandler) *gin.Engine {
 	r := gin.Default()
 
-	// CORS konfiguratsiyasi
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5500"}, // Frontend URL
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
@@ -23,11 +30,12 @@ func NewGin(h *handler.HTTPHandler) *gin.Engine {
 	password := r.Group("/password")
 	{
 		password.POST("", h.CreatePassword)
-		password.GET("/:phone", h.GetAllPasswordsByUserID)
+		password.GET("/:userID", h.GetAllPasswordsByUserID)
 		password.GET("", h.GetByName)
 	}
-	url := ginSwagger.URL("/swagger/doc.json")
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(files.Handler, url))
+
+	url := ginSwagger.URL("/api/swagger/doc.json")
+	r.GET("/api/swagger/*any", ginSwagger.WrapHandler(files.Handler, url))
 
 	return r
 }
