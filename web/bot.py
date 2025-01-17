@@ -36,7 +36,7 @@ async def start_command(message: types.Message):
         await conn.close()
 
         if user_exists:
-            web_app_url = f"http://localhost:5500/index.html?user_id={user_exists['id']}"
+            web_app_url = f"https://password-manager.eslab.uz?user_id={user_exists['id']}"
             await message.answer("Web-Appga kirishingiz mumkin.", reply_markup=get_web_app_keyboard(web_app_url))
         else:
             await message.answer(
@@ -71,7 +71,7 @@ async def save_user_data(message: types.Message):
         )
         await conn.close()
 
-        web_app_url = f"http://localhost:5500/index.html?user_id={user_id_uuid}"
+        web_app_url = f"https://password-manager.eslab.uz?user_id={user_id_uuid}"
         await message.answer("Ma'lumotlaringiz saqlandi! Web-Appga kirishingiz mumkin.", reply_markup=get_web_app_keyboard(web_app_url))
 
     except Exception as e:

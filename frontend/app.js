@@ -36,7 +36,6 @@ function getByName(site) {
         });
 }
 
-// Yangi parol saqlash
 savePasswordBtn.addEventListener("click", () => {
     formContainer.innerHTML = `
         <form id="saveForm">
@@ -55,7 +54,7 @@ savePasswordBtn.addEventListener("click", () => {
             const response = await fetch(BASE_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userID, site, password }),
+                body: JSON.stringify({ site, password }),
             });
             const result = await response.json();
             alert(result.message || "Parol muvaffaqiyatli saqlandi!");

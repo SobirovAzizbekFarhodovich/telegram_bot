@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/telegram_bot/bot/models"
 )
 
 func getUserID() string {
@@ -34,18 +35,20 @@ func buildResponse(c *gin.Context, status int, message string, reason string, da
 // @Failure 500 {object} gin.H
 // @Router /password [post]
 func (h *HTTPHandler) CreatePassword(c *gin.Context) {
-	userID := getUserID()
-	var password models.Password
+	userID := getUserID() // Backend avtomatik ravishda user ID oladi
+	var password models.Passwordswagger
 	if err := c.BindJSON(&password); err != nil {
 		buildResponse(c, http.StatusBadRequest, "Invalid input", "Invalid JSON format", nil)
 		return
 	}
+	password.UserID = userID
 	if err := h.service.PrService.CreatePassword(userID, password); err != nil {
 		buildResponse(c, http.StatusInternalServerError, "Failed to create password", "Database error", nil)
 		return
 	}
 	buildResponse(c, http.StatusCreated, "Password created successfully", "", password)
 }
+
 
 // @Summary Get All Passwords
 // @Description Get all passwords for a user by user ID

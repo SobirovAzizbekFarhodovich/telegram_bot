@@ -5,3 +5,9 @@ type Password struct {
 	Site string `json:"site" db:"site"`
 	Password string `json:"password" db:"password"`
 }
+
+type Passwordswagger struct {
+	ID string `json:"id" db:"id"`
+	Site string `json:"site" db:"site"`
+	Password string `json:"password" db:"password"`
+}
