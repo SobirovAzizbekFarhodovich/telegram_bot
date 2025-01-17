@@ -7,11 +7,12 @@ const searchPasswordsBtn = document.getElementById("searchPasswords");
 const formContainer = document.getElementById("formContainer");
 const passwordsContainer = document.getElementById("passwordsContainer");
 
-const BASE_URL = "http://3.79.247.241:8080/api/swagger/password";
-const userID = tg.initDataUnsafe?.user?.id || "demo-user-id"; 
+const BASE_URL = "https://password-manager.eslab.uz/password";
+const userID = new URLSearchParams(window.location.search).get("user_id");
 
+// Parollarni qidirish
 function getByName(site) {
-    const url = `${BASE_URL}/search?userID=${encodeURIComponent(userID)}&site=${encodeURIComponent(site)}`;
+    const url = `${BASE_URL}/search?user_id=${encodeURIComponent(userID)}&site=${encodeURIComponent(site)}`;
     fetch(url)
         .then(response => {
             if (!response.ok) {
@@ -53,7 +54,7 @@ savePasswordBtn.addEventListener("click", () => {
             const response = await fetch(BASE_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ site, password }),
+                body: JSON.stringify({ userID, site, password }),
             });
             const result = await response.json();
             alert(result.message || "Parol muvaffaqiyatli saqlandi!");
@@ -66,7 +67,7 @@ savePasswordBtn.addEventListener("click", () => {
 // Barcha parollarni ko‘rish
 viewPasswordsBtn.addEventListener("click", async () => {
     try {
-        const response = await fetch(`${BASE_URL}/all?userID=${encodeURIComponent(userID)}`);
+        const response = await fetch(`${BASE_URL}/all?user_id=${encodeURIComponent(userID)}`);
         const passwords = await response.json();
 
         passwordsContainer.innerHTML = `
@@ -99,5 +100,5 @@ searchPasswordsBtn.addEventListener("click", () => {
         const site = document.getElementById("searchSite").value;
 
         getByName(site);
-        });
+    });
 });
