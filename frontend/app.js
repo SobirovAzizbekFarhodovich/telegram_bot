@@ -100,5 +100,5 @@ searchPasswordsBtn.addEventListener("click", () => {
         const site = document.getElementById("searchSite").value;
 
         getByName(site);
-    });
+        });
 });
