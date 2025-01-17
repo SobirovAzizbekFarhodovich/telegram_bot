@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 func buildResponse(c *gin.Context, status int, message string, reason string, data interface{}) {
 	response := models.APIResponse{
 		Timestamp:  time.Now().Format(time.RFC3339),
@@ -20,7 +19,6 @@ func buildResponse(c *gin.Context, status int, message string, reason string, da
 	c.JSON(status, response)
 }
 
-
 // @Summary Create Password
 // @Description Create a new password for the user
 // @Tags Password
@@ -30,7 +28,7 @@ func buildResponse(c *gin.Context, status int, message string, reason string, da
 // @Success 200 {object} models.APIResponse
 // @Failure 400 {object} models.APIResponse
 // @Failure 500 {object} models.APIResponse
-// @Router /password/post_password [post]
+// @Router /password [post]
 func (h *HTTPHandler) CreatePassword(c *gin.Context) {
 	var password models.Password
 	if err := c.ShouldBindJSON(&password); err != nil {
@@ -57,7 +55,7 @@ func (h *HTTPHandler) CreatePassword(c *gin.Context) {
 // @Success 200 {object} models.APIResponse
 // @Failure 400 {object} models.APIResponse
 // @Failure 500 {object} models.APIResponse
-// @Router /password/get_password__userID/{userID} [get]
+// @Router /password/{userID} [get]
 func (h *HTTPHandler) GetAllPasswordsByUserID(c *gin.Context) {
 	userID := c.Param("userID")
 	if userID == "" {
@@ -86,7 +84,7 @@ func (h *HTTPHandler) GetAllPasswordsByUserID(c *gin.Context) {
 // @Success 200 {object} models.APIResponse
 // @Failure 400 {object} models.APIResponse
 // @Failure 500 {object} models.APIResponse
-// @Router /password/get_password [get]
+// @Router /password [get]
 func (h *HTTPHandler) GetByName(c *gin.Context) {
 	userID := c.Query("userID")
 	site := c.Query("site")

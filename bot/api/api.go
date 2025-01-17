@@ -29,10 +29,9 @@ func NewGin(h *handler.HTTPHandler) *gin.Engine {
 
 	password := r.Group("/password")
 	{
-		password.GET("/api/password/get_password__userID/:userID", h.GetAllPasswordsByUserID)
-		password.GET("/api/password/get_password", h.GetByName)
-		password.POST("/api/password/post_password", h.CreatePassword)
-
+		password.GET("/:userID", h.GetAllPasswordsByUserID)
+		password.GET("/", h.GetByName)
+		password.POST("/", h.CreatePassword)
 	}
 
 	url := ginSwagger.URL("/api/swagger/doc.json")
