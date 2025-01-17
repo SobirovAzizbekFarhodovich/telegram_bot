@@ -7,7 +7,7 @@ const searchPasswordsBtn = document.getElementById("searchPasswords");
 const formContainer = document.getElementById("formContainer");
 const passwordsContainer = document.getElementById("passwordsContainer");
 
-const BASE_URL = "http://3.79.247.241:8080/api/swagger/index.html#/Password";
+const BASE_URL = "http://3.79.247.241:8080/api";
 const userID = new URLSearchParams(window.location.search).get("user_id");
 
 function getByName(site) {
@@ -65,7 +65,7 @@ savePasswordBtn.addEventListener("click", () => {
 
 viewPasswordsBtn.addEventListener("click", async () => {
     try {
-        const response = await fetch(`${BASE_URL}/get_password__userID/${encodeURIComponent(userID)}`);
+        const response = await fetch(`${BASE_URL}/password/get_password__userID/${encodeURIComponent(userID)}`);
         const passwords = await response.json();
 
         passwordsContainer.innerHTML = `
