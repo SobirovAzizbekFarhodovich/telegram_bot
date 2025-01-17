@@ -40,20 +40,17 @@ func (h *HTTPHandler) CreatePassword(c *gin.Context) {
         return
     }
     var password models.Password
-    if err := c.BindJSON(&password); err != nil {
+    if err := c.ShouldBindJSON(&password); err != nil {
         buildResponse(c, http.StatusBadRequest, "Invalid input", "Invalid JSON format", nil)
         return
     }
-    password.UserID = userID
-    if err := h.service.PrService.CreatePassword(userID, password);
-        err != nil {
+    password.UserID = userID 
+    if err := h.service.PrService.CreatePassword(userID, password); err != nil {
         buildResponse(c, http.StatusInternalServerError, "Failed to create password", "Database error", nil)
         return
     }
     buildResponse(c, http.StatusCreated, "Password created successfully", "", password)
 }
-
-
 
 
 
