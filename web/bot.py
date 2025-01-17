@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 # Bot tokeni
 BOT_TOKEN = "7722907926:AAHe9pfBs74AbiC49nPpx8IcS9NpJ-vC-ew"
-DATABASE_URL = "postgresql://azizbek:123@localhost/bot"
+DATABASE_URL = "postgresql://azizbek:123@postgres_db/bot"
 
 # Bot va Dispatcher obyektlarini yaratish
 bot = Bot(token=BOT_TOKEN)

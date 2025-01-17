@@ -7,10 +7,9 @@ const searchPasswordsBtn = document.getElementById("searchPasswords");
 const formContainer = document.getElementById("formContainer");
 const passwordsContainer = document.getElementById("passwordsContainer");
 
-const BASE_URL = "http://localhost:8080/password";
-const userID = tg.initDataUnsafe?.user?.id || "demo-user-id"; // Telegram user ID
+const BASE_URL = "http://3.79.247.241:8080/api/swagger/password";
+const userID = tg.initDataUnsafe?.user?.id || "demo-user-id"; 
 
-// Parollarni qidirish
 function getByName(site) {
     const url = `${BASE_URL}/search?userID=${encodeURIComponent(userID)}&site=${encodeURIComponent(site)}`;
     fetch(url)
