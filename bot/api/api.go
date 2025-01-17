@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	files "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	_ "bot/docs" // Import generated Swagger docs
+	_ "bot/docs"
 )
 
 // @title Password Management API
@@ -29,9 +29,9 @@ func NewGin(h *handler.HTTPHandler) *gin.Engine {
 
 	password := r.Group("/password")
 	{
-		password.POST("", h.CreatePassword)
-		password.GET("/:userID", h.GetAllPasswordsByUserID)
-		password.GET("", h.GetByName)
+		password.POST("/post_password", h.CreatePassword)
+		password.GET("/get_password__userID/:userID", h.GetAllPasswordsByUserID)
+		password.GET("/get_password", h.GetByName)
 	}
 
 	url := ginSwagger.URL("/api/swagger/doc.json")

@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/password": {
+        "/password/get_password": {
             "get": {
                 "description": "Get passwords by site name for the user",
                 "consumes": [
@@ -31,6 +31,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "User ID",
+                        "name": "userID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Site name",
                         "name": "site",
                         "in": "query",
@@ -39,28 +46,71 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "List of passwords",
+                        "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Password"
-                            }
+                            "$ref": "#/definitions/models.APIResponse"
                         }
                     },
                     "400": {
-                        "description": "Site name is required",
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.APIResponse"
                         }
                     },
                     "500": {
-                        "description": "Failed to fetch passwords",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.APIResponse"
                         }
                     }
                 }
-            },
+            }
+        },
+        "/password/get_password__userID/{userID}": {
+            "get": {
+                "description": "Get all passwords for a user by user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Password"
+                ],
+                "summary": "Get All Passwords",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/password/post_password": {
             "post": {
                 "description": "Create a new password for the user",
                 "consumes": [
@@ -85,54 +135,22 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Password created successfully",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.APIResponse"
                         }
                     },
                     "400": {
-                        "description": "Invalid input",
+                        "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.APIResponse"
                         }
                     },
                     "500": {
-                        "description": "Failed to create password",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/password/:userID": {
-            "get": {
-                "description": "Get all passwords for a user by user ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Password"
-                ],
-                "summary": "Get All Passwords",
-                "responses": {
-                    "200": {
-                        "description": "List of passwords",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Password"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Failed to fetch passwords",
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.APIResponse"
                         }
                     }
                 }
@@ -140,16 +158,37 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.APIResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "Passwords retrieved successfully"
+                },
+                "reason": {
+                    "type": "string"
+                },
+                "request_url": {
+                    "type": "string",
+                    "example": "/password/get_password"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2025-01-17T20:58:06Z"
+                }
+            }
+        },
         "models.Password": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "string"
-                },
                 "password": {
                     "type": "string"
                 },
                 "site": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }

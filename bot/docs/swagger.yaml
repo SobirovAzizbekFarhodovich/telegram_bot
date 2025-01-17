@@ -1,12 +1,27 @@
 basePath: /
 definitions:
+  models.APIResponse:
+    properties:
+      data: {}
+      message:
+        example: Passwords retrieved successfully
+        type: string
+      reason:
+        type: string
+      request_url:
+        example: /password/get_password
+        type: string
+      timestamp:
+        example: "2025-01-17T20:58:06Z"
+        type: string
+    type: object
   models.Password:
     properties:
-      id:
-        type: string
       password:
         type: string
       site:
+        type: string
+      user_id:
         type: string
     type: object
 info:
@@ -15,12 +30,17 @@ info:
   title: Password Management API
   version: "1.0"
 paths:
-  /password:
+  /password/get_password:
     get:
       consumes:
       - application/json
       description: Get passwords by site name for the user
       parameters:
+      - description: User ID
+        in: query
+        name: userID
+        required: true
+        type: string
       - description: Site name
         in: query
         name: site
@@ -30,22 +50,50 @@ paths:
       - application/json
       responses:
         "200":
-          description: List of passwords
+          description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.Password'
-            type: array
+            $ref: '#/definitions/models.APIResponse'
         "400":
-          description: Site name is required
+          description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/models.APIResponse'
         "500":
-          description: Failed to fetch passwords
+          description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/models.APIResponse'
       summary: Get Passwords By Site
       tags:
       - Password
+  /password/get_password__userID/{userID}:
+    get:
+      consumes:
+      - application/json
+      description: Get all passwords for a user by user ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      summary: Get All Passwords
+      tags:
+      - Password
+  /password/post_password:
     post:
       consumes:
       - application/json
@@ -60,40 +108,19 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Password created successfully
-          schema:
-            type: string
-        "400":
-          description: Invalid input
-          schema:
-            type: string
-        "500":
-          description: Failed to create password
-          schema:
-            type: string
-      summary: Create Password
-      tags:
-      - Password
-  /password/:userID:
-    get:
-      consumes:
-      - application/json
-      description: Get all passwords for a user by user ID
-      produces:
-      - application/json
-      responses:
         "200":
-          description: List of passwords
+          description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.Password'
-            type: array
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIResponse'
         "500":
-          description: Failed to fetch passwords
+          description: Internal Server Error
           schema:
-            type: string
-      summary: Get All Passwords
+            $ref: '#/definitions/models.APIResponse'
+      summary: Create Password
       tags:
       - Password
 securityDefinitions:

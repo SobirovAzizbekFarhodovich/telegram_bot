@@ -7,11 +7,11 @@ const searchPasswordsBtn = document.getElementById("searchPasswords");
 const formContainer = document.getElementById("formContainer");
 const passwordsContainer = document.getElementById("passwordsContainer");
 
-const BASE_URL = "http://3.79.247.241:8080/api/password";
+const BASE_URL = "http://3.79.247.241:8080/api/swagger/index.html#/Password";
 const userID = new URLSearchParams(window.location.search).get("user_id");
 
 function getByName(site) {
-    const url = `${BASE_URL}/search?userID=${encodeURIComponent(userID)}&site=${encodeURIComponent(site)}`;
+    const url = `${BASE_URL}/get_password?userID=${encodeURIComponent(userID)}&site=${encodeURIComponent(site)}`;
     fetch(url)
         .then(response => {
             if (!response.ok) {
@@ -50,7 +50,7 @@ savePasswordBtn.addEventListener("click", () => {
         const password = document.getElementById("password").value;
 
         try {
-            const response = await fetch(BASE_URL, {
+            const response = await fetch(`${BASE_URL}/post_password`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user_id: userID, site, password }),
@@ -65,7 +65,7 @@ savePasswordBtn.addEventListener("click", () => {
 
 viewPasswordsBtn.addEventListener("click", async () => {
     try {
-        const response = await fetch(`${BASE_URL}/${encodeURIComponent(userID)}`);
+        const response = await fetch(`${BASE_URL}/get_password__userID/${encodeURIComponent(userID)}`);
         const passwords = await response.json();
 
         passwordsContainer.innerHTML = `
