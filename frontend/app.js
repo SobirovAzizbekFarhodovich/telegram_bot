@@ -1,5 +1,5 @@
 const tg = window.Telegram.WebApp;
-tg.expand(); // Telegram Web App-ni kengaytirish
+tg.expand(); 
 
 const savePasswordBtn = document.getElementById("savePassword");
 const viewPasswordsBtn = document.getElementById("viewPasswords");
@@ -10,7 +10,6 @@ const passwordsContainer = document.getElementById("passwordsContainer");
 const BASE_URL = "http://3.79.247.241:8080/api/password";
 const userID = new URLSearchParams(window.location.search).get("user_id");
 
-// Parollarni qidirish
 function getByName(site) {
     const url = `${BASE_URL}/search?userID=${encodeURIComponent(userID)}&site=${encodeURIComponent(site)}`;
     fetch(url)
@@ -64,7 +63,6 @@ savePasswordBtn.addEventListener("click", () => {
     });
 });
 
-// Barcha parollarni ko‘rish
 viewPasswordsBtn.addEventListener("click", async () => {
     try {
         const response = await fetch(`${BASE_URL}/${encodeURIComponent(userID)}`);
@@ -86,7 +84,6 @@ viewPasswordsBtn.addEventListener("click", async () => {
     }
 });
 
-// Parollarni qidirish
 searchPasswordsBtn.addEventListener("click", () => {
     formContainer.innerHTML = `
         <form id="searchForm">

@@ -4,12 +4,12 @@ import (
 	"bot/models"
 	"net/http"
 	"time"
-
 	"github.com/gin-gonic/gin"
 )
 
-func getUserID() string {
-	return "user-uuid-example"
+func getUserID(c *gin.Context) string {
+	userID := c.GetString("telegram_user_id")
+	return userID
 }
 
 func buildResponse(c *gin.Context, status int, message string, reason string, data interface{}) {
@@ -34,19 +34,26 @@ func buildResponse(c *gin.Context, status int, message string, reason string, da
 // @Failure 500 {object} gin.H
 // @Router /password [post]
 func (h *HTTPHandler) CreatePassword(c *gin.Context) {
-	userID := getUserID() 
-	var password models.Password 
-	if err := c.BindJSON(&password); err != nil {
-		buildResponse(c, http.StatusBadRequest, "Invalid input", "Invalid JSON format", nil)
-		return
-	}
-	password.UserID = userID
-	if err := h.service.PrService.CreatePassword(userID, password); err != nil {
-		buildResponse(c, http.StatusInternalServerError, "Failed to create password", "Database error", nil)
-		return
-	}
-	buildResponse(c, http.StatusCreated, "Password created successfully", "", password)
+    userID := getUserID(c)
+    if userID == "" {
+        buildResponse(c, http.StatusUnauthorized, "Unauthorized", "User ID not found", nil)
+        return
+    }
+    var password models.Password
+    if err := c.BindJSON(&password); err != nil {
+        buildResponse(c, http.StatusBadRequest, "Invalid input", "Invalid JSON format", nil)
+        return
+    }
+    password.UserID = userID
+    if err := h.service.PrService.CreatePassword(userID, password);
+        err != nil {
+        buildResponse(c, http.StatusInternalServerError, "Failed to create password", "Database error", nil)
+        return
+    }
+    buildResponse(c, http.StatusCreated, "Password created successfully", "", password)
 }
+
+
 
 
 
@@ -59,7 +66,7 @@ func (h *HTTPHandler) CreatePassword(c *gin.Context) {
 // @Failure 500 {object} gin.H
 // @Router /password/:userID [get]
 func (h *HTTPHandler) GetAllPasswordsByUserID(c *gin.Context) {
-	userID := getUserID()
+	userID := getUserID(c)
 	passwords, err := h.service.PrService.GetAllPasswordsByUserID(userID)
 	if err != nil {
 		buildResponse(c, http.StatusInternalServerError, "Failed to fetch passwords", "Database error", nil)
@@ -83,7 +90,7 @@ func (h *HTTPHandler) GetAllPasswordsByUserID(c *gin.Context) {
 // @Failure 500 {object} gin.H
 // @Router /password [get]
 func (h *HTTPHandler) GetByName(c *gin.Context) {
-	userID := getUserID()
+	userID := getUserID(c)
 	site := c.Query("site")
 	if site == "" {
 		buildResponse(c, http.StatusBadRequest, "Invalid input", "Site name is required", nil)

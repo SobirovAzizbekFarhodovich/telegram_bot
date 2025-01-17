@@ -36,7 +36,7 @@ async def start_command(message: types.Message):
         await conn.close()
 
         if user_exists:
-            web_app_url = f"https://password-manager.eslab.uz?user_id={user_exists['id']}"
+            web_app_url = f"https://your-web-app.com?user_id={user_exists['id']}"   
             await message.answer("Web-Appga kirishingiz mumkin.", reply_markup=get_web_app_keyboard(web_app_url))
         else:
             await message.answer(

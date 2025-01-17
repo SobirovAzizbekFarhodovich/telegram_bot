@@ -16,17 +16,19 @@ func NewPasswordStorage(db *sql.DB) *PasswordStorage {
 	return &PasswordStorage{db: db}
 }
 
-func (u *PasswordStorage) CreatePassword(userID string, password *models.Password) error {
-	query := `
-		INSERT INTO passwords (user_id, site, password)
-		VALUES ($1, $2, $3)
-	`
-	_, err := u.db.Exec(query, userID, password.Site, password.Password)
-	if err != nil {
-		return fmt.Errorf("failed to create password: %w", err)
-	}
-	return nil
+func (u *PasswordStorage) CreatePassword(userID string, password *models.Password) error { 
+    query := `
+        INSERT INTO passwords (user_id, site, password)
+        VALUES ($1, $2, $3)
+    `
+    _, err := u.db.Exec(query, userID, password.Site, password.Password)
+    if err != nil {
+        return fmt.Errorf("failed to create password: %w", err)
+    }
+    return nil
 }
+
+
 
 func (u *PasswordStorage) GetAllPasswordsByUserID(userID string) ([]models.Password, error) {
 	query := `
