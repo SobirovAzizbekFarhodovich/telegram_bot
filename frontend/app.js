@@ -1,5 +1,5 @@
 const tg = window.Telegram.WebApp;
-tg.expand(); 
+tg.expand();
 
 const savePasswordBtn = document.getElementById("savePassword");
 const viewPasswordsBtn = document.getElementById("viewPasswords");
@@ -9,31 +9,6 @@ const passwordsContainer = document.getElementById("passwordsContainer");
 
 const BASE_URL = "http://3.79.247.241:8080/api";
 const userID = new URLSearchParams(window.location.search).get("user_id");
-
-function getByName(site) {
-    const url = `${BASE_URL}/get_password?userID=${encodeURIComponent(userID)}&site=${encodeURIComponent(site)}`;
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("No passwords found for the given criteria");
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("Fetched data:", data);
-            const passwords = Array.isArray(data) ? data : [];
-            passwordsContainer.innerHTML = `
-                <h3>Qidiruv natijasi</h3>
-                <ul>
-                    ${passwords.map(p => `<li><strong>${p.site}</strong>: ${p.password}</li>`).join("")}
-                </ul>
-            `;
-        })
-        .catch(err => {
-            console.error(err);
-            passwordsContainer.innerHTML = `<p>${err.message}</p>`;
-        });
-}
 
 savePasswordBtn.addEventListener("click", () => {
     formContainer.innerHTML = `
@@ -65,20 +40,12 @@ savePasswordBtn.addEventListener("click", () => {
 
 viewPasswordsBtn.addEventListener("click", async () => {
     try {
-        const response = await fetch(`${BASE_URL}/password/get_password__userID/${encodeURIComponent(userID)}`);
-        const passwords = await response.json();
-
-        passwordsContainer.innerHTML = `
-            <h3>Saqlangan parollar</h3>
-            <ul>
-                ${passwords
-                    .map(
-                        (password) =>
-                            `<li><strong>${password.site}</strong>: ${password.password}</li>`
-                    )
-                    .join("")}
-            </ul>
-        `;
+        const response = await fetch(`${BASE_URL}/password/${userID}`);
+        const result = await response.json();
+        passwordsContainer.innerHTML = `<h3>Sizning parollaringiz</h3>`;
+        result.data.forEach(password => {
+            passwordsContainer.innerHTML += `<p><strong>${password.site}:</strong> ${password.password}</p>`;
+        });
     } catch (error) {
         alert("Xatolik yuz berdi: " + error.message);
     }
@@ -87,7 +54,7 @@ viewPasswordsBtn.addEventListener("click", async () => {
 searchPasswordsBtn.addEventListener("click", () => {
     formContainer.innerHTML = `
         <form id="searchForm">
-            <h3>Parollarni qidirish</h3>
+            <h3>Parol qidirish</h3>
             <input type="text" id="searchSite" placeholder="Sayt nomi" required />
             <button type="submit">Qidirish</button>
         </form>
@@ -96,6 +63,15 @@ searchPasswordsBtn.addEventListener("click", () => {
         e.preventDefault();
         const site = document.getElementById("searchSite").value;
 
-        getByName(site);
+        try {
+            const response = await fetch(`${BASE_URL}/password?userID=${userID}&site=${site}`);
+            const result = await response.json();
+            passwordsContainer.innerHTML = `<h3>Qidiruv natijalari</h3>`;
+            result.data.forEach(password => {
+                passwordsContainer.innerHTML += `<p><strong>${password.site}:</strong> ${password.password}</p>`;
+            });
+        } catch (error) {
+            alert("Xatolik yuz berdi: " + error.message);
+        }
     });
 });

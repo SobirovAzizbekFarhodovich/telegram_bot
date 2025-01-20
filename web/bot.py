@@ -21,15 +21,6 @@ dp = Dispatcher()
 async def get_db_connection():
     return await asyncpg.connect(DATABASE_URL)
 
-phone_keyboard = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="📱 Telefon raqamni yuborish", request_contact=True)]
-    ],
-    resize_keyboard=True,
-    one_time_keyboard=True
-)
-
-# Web-App tugmasi
 def get_web_app_keyboard(web_app_url):
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -52,41 +43,11 @@ async def start_command(message: types.Message):
             web_app_url = f"https://password-manager.eslab.uz?user_id={user['id']}"
             await message.answer("🔐 Web-App'ga kirishingiz mumkin!", reply_markup=get_web_app_keyboard(web_app_url))
         else:
-            await message.answer("📲 Iltimos, telefon raqamingizni yuboring:", reply_markup=phone_keyboard)
+            await message.answer("📲 Iltimos, telefon raqamingizni yuboring:", reply_markup=ReplyKeyboardMarkup(resize_keyboard=True, keyboard=[[KeyboardButton(text="📱 Telefon raqamni yuborish", request_contact=True)]], one_time_keyboard=True))
 
     except Exception as e:
         logger.error(f"❌ Xatolik: {e}")
         await message.answer("❌ Serverda xatolik yuz berdi.")
-
-@dp.message(F.contact)
-async def save_user_data(message: types.Message):
-    user_id = message.from_user.id
-    first_name = message.from_user.first_name
-    phone_number = message.contact.phone_number
-
-    if not re.match(r"^\+998[0-9]{9}$", phone_number):
-        await message.answer("❌ Telefon raqam noto‘g‘ri formatda.")
-        return
-
-    try:
-        conn = await get_db_connection()
-        user_id_uuid = await conn.fetchval(
-            """
-            INSERT INTO users (telegram_id, first_name, phone_number)
-            VALUES ($1, $2, $3)
-            ON CONFLICT (telegram_id) DO UPDATE SET first_name = $2, phone_number = $3
-            RETURNING id
-            """,
-            user_id, first_name, phone_number
-        )
-        await conn.close()
-
-        web_app_url = f"https://password-manager.eslab.uz?user_id={user_id_uuid}"
-        await message.answer("✅ Ro'yxatdan o'tdingiz! Web-App'ga kiring:", reply_markup=get_web_app_keyboard(web_app_url))
-
-    except Exception as e:
-        logger.error(f"❌ Foydalanuvchi ma'lumotlarini saqlashda xatolik: {e}")
-        await message.answer("❌ Xatolik yuz berdi.")
 
 async def main():
     try:
