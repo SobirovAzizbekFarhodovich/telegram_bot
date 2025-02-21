@@ -1,17 +1,6 @@
 version: '3.8'
 
 services:
-  frontend:
-    container_name: frontend
-    build: ./frontend
-    ports:
-      - "8081:80"
-    networks:
-      - yalp
-    volumes:
-      - ./frontend:/usr/share/nginx/html
-    restart: unless-stopped
-
   backend:
     container_name: backend
     build: ./bot

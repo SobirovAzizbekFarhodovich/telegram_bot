@@ -102,4 +102,6 @@ func (h *HTTPHandler) GetByName(c *gin.Context) {
 		return
 	}
 	buildResponse(c, http.StatusOK, "Passwords retrieved successfully", "", passwords)
+	
 }
+

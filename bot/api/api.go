@@ -21,7 +21,10 @@ func NewGin(h *handler.HTTPHandler) *gin.Engine {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://password-manager.eslab.uz/"},
+		AllowOrigins: []string{
+			"https://password-manager.eslab.uz/",
+			"https://gorgeous-cendol-0dce7b.netlify.app/",
+		},		
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		AllowCredentials: true,
